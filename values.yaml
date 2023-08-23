@@ -1,14 +1,32 @@
-# Default values for k8s-fiap.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+sharedEnvs:
+  MYSQL_ROOT_HOST: "%"
+  MYSQL_DATABASE:
+
+sharedEnvSecrets:
+  MYSQL_ROOT_PASSWORD:
+  MYSQL_USER:
+  MYSQL_PASSWORD:
 
 replicaCount: 2
 
-image:
-  repository: nginx
+app:
+  repository: kidush/fiap-pedidos
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
+
+db:
+  name: mysql-fiap
+  repository: mysql/mysql-server
+  pullPolicy: IfNotPresent
+  tag: "8.0"
+
+# that is for the PersistentVolume
+# By default it's using docker desktop, you should verify which name you should use
+# if you are not using docker desktop
+pv:
+  nodeAffinity:
+    name: "" # you should add a in this line if you would like to use a different name for the node
 
 imagePullSecrets: []
 nameOverride: ""
@@ -55,28 +73,3 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}

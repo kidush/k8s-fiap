@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "k8s-fiap.fullname" . }}
+  name: {{ include "k8s-fiap.name" . }}-svc
   labels:
     {{- include "k8s-fiap.labels" . | nindent 4 }}
 spec:

@@ -1,0 +1,18 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.db.name }}-svc
+  namespace: default
+spec:
+  labels:
+    app: {{ .Values.db.name }}
+  type: ClusterIP
+  ports:
+  - name: {{ .Values.db.name }}
+    protocol: TCP
+    port: 3306
+    targetPort: 
+    nodePort: 30001
+---
+

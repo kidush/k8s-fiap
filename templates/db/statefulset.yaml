@@ -1,0 +1,37 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.db.name }}-sts
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.db.name }} # has to match .spec.template.metadata.labels
+  serviceName: "{{ .Values.db.name }}"
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db.name }} # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Values.db.name }}
+        image: {{ .Values.db.name }}
+        ports:
+        - containerPort: 80
+          name: {{ .Values.db.name }}
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      storageClassName: my-storage-class
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+---
+

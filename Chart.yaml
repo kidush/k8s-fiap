@@ -1,6 +1,6 @@
 apiVersion: v2
-name: k8s-fiap
-description: A Helm chart for Kubernetes
+name: fiap-pedidos
+description: A Helm chart for Fiap app challenge
 
 # A chart can be either an 'application' or a 'library' chart.
 #
