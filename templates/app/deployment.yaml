@@ -26,33 +26,28 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.app.repository }}:{{ .Values.app.tag }}
           imagePullPolicy: {{ .Values.app.pullPolicy }}
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.name }}-secret
+                  key: DB_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: {{  .Values.app.name }}-config
           ports:
             - name: http
               containerPort: {{ .Values.service.app.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /api
+              port: {{ .Values.service.app.targetPort }}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /api
+              port: {{ .Values.service.app.targetPort }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}

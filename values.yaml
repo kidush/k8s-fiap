@@ -1,18 +1,17 @@
-sharedEnvs:
-  MYSQL_ROOT_HOST: "%"
-  MYSQL_DATABASE:
-
-sharedEnvSecrets:
-  MYSQL_ROOT_PASSWORD:
-  MYSQL_PASSWORD:
-
 replicaCount: 2
 
 app:
+  name: fiap-pedidos
   repository: kidush/fiap-pedidos
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
+  env:
+    values:
+      DB_HOST: mysql-fiap 
+      DB_PORT: 3306
+      DB_DATABASE: fiap-pedidos
+      DB_USERNAME: fiap
 
 db:
   name: mysql-fiap
@@ -24,13 +23,9 @@ db:
     values:
       MYSQL_USER: fiap
       MYSQL_DATABASE: fiap-pedidos
+      MYSQL_ROOT_HOST: "%"
 
-# that is for the PersistentVolume
-# By default it's using docker desktop, you should verify which name you should use
-# if you are not using docker desktop
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
 
 podAnnotations: {}
 
@@ -47,9 +42,10 @@ securityContext: {}
 
 service:
   app:
-    type: LoadBalancer
-    port: 80
+    type: NodePort
+    port: 3000
     targetPort: 3000
+    nodePort: 30001
 
 ingress:
   enabled: false
