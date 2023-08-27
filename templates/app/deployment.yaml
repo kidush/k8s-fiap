@@ -22,18 +22,17 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "k8s-fiap.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.app.repository }}:{{ .Values.app.tag | default .Chart.AppVersion }}"
+          image: {{ .Values.app.repository }}:{{ .Values.app.tag }}
           imagePullPolicy: {{ .Values.app.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.app.port }}
               protocol: TCP
           livenessProbe:
             httpGet:

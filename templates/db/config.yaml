@@ -1,0 +1,12 @@
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.db.name }}-config
+data:
+  {{- range $name, $value := .Values.db.env.values }}
+  {{ $name }}: {{ $value | quote }}
+  {{ end }}
+
+---
+

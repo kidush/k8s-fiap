@@ -4,7 +4,6 @@ sharedEnvs:
 
 sharedEnvSecrets:
   MYSQL_ROOT_PASSWORD:
-  MYSQL_USER:
   MYSQL_PASSWORD:
 
 replicaCount: 2
@@ -20,26 +19,18 @@ db:
   repository: mysql/mysql-server
   pullPolicy: IfNotPresent
   tag: "8.0"
+  mountPath: /var/lib/mysql
+  env:
+    values:
+      MYSQL_USER: fiap
+      MYSQL_DATABASE: fiap-pedidos
 
 # that is for the PersistentVolume
 # By default it's using docker desktop, you should verify which name you should use
 # if you are not using docker desktop
-pv:
-  nodeAffinity:
-    name: "" # you should add a in this line if you would like to use a different name for the node
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
 podAnnotations: {}
 
@@ -55,8 +46,10 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  app:
+    type: LoadBalancer
+    port: 80
+    targetPort: 3000
 
 ingress:
   enabled: false

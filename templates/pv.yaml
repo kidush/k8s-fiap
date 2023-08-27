@@ -3,19 +3,12 @@ kind: PersistentVolume
 metadata:
   name: {{ include "k8s-fiap.name" . }}-pv
 spec:
-  storageClassName: local-storage
-  local:
-    path: /
+  storageClassName: manual
   capacity:
-    storage: 500Mi
+    storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - {{ .Values.pv.nodeAffinity.name | default "docker-desktop" | quote }}
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data

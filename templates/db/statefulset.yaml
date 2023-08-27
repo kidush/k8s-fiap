@@ -6,28 +6,36 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.db.name }} # has to match .spec.template.metadata.labels
+      app: {{ .Values.db.name }}
   serviceName: "{{ .Values.db.name }}"
   template:
     metadata:
       labels:
-        app: {{ .Values.db.name }} # has to match .spec.selector.matchLabels
+        app: {{ .Values.db.name }}
     spec:
-      terminationGracePeriodSeconds: 10
       containers:
       - name: {{ .Values.db.name }}
-        image: {{ .Values.db.name }}
+        image: {{ .Values.db.repository }}:{{ .Values.db.tag }}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.db.name }}-secret
+                key: MYSQL_ROOT_PASSWORD
+        envFrom:
+          - configMapRef:
+            name: {{ .Values.db.name }}-config
         ports:
-        - containerPort: 80
+        - containerPort: 3306
           name: {{ .Values.db.name }}
         volumeMounts:
-        - name: www
-          mountPath: /usr/share/nginx/html
+        - name: {{ .Values.db.name }}-persistent-storage
+          mountPath: {{ .Values.db.mountPath }}
   volumeClaimTemplates:
   - metadata:
-      name: www
+      name: {{ .Values.db.name }}-persistent-storage
     spec:
-      storageClassName: my-storage-class
+      storageClassName: {{ .Values.db.name }}-pvc
       accessModes:
       - ReadWriteOnce
       resources:

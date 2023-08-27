@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "k8s-fiap.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.service.app.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.app.port }}
       targetPort: http
       protocol: TCP
       name: http
