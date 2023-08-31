@@ -3,12 +3,12 @@ kind: Deployment
 metadata:
   name: {{ include "k8s-fiap.fullname" . }}-deployment
   labels:
-    {{- include "k8s-fiap.labels" . | nindent 4 }}
+    app: {{ .Values.app.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "k8s-fiap.selectorLabels" . | nindent 6 }}
+      app: {{ .Values.app.name }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,7 +16,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "k8s-fiap.selectorLabels" . | nindent 8 }}
+        app: {{ .Values.app.name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

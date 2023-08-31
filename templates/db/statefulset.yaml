@@ -34,15 +34,14 @@ spec:
         - containerPort: 3306
           name: {{ .Values.db.name }}
         volumeMounts:
-        - name: {{ .Values.db.name }}-persistent-storage
+        - name: {{ .Values.db.name }}-pvc
           mountPath: {{ .Values.db.mountPath }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ .Values.db.name }}-persistent-storage
+      name: {{ .Values.db.name }}-pvc
     spec:
-      storageClassName: manual
       accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
       resources:
         requests:
           storage: 1Gi

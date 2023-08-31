@@ -7,8 +7,6 @@ metadata:
 spec:
   selector:
     app: {{ .Values.db.name }}
-  labels:
-    app: {{ .Values.db.name }}
   ports:
   - name: {{ .Values.db.name }}
     protocol: TCP
